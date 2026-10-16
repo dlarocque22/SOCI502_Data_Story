@@ -1,0 +1,63 @@
+---
+title: "Data Story: Milestone One"
+author: Daichi Larocque
+format: html
+---
+
+```{r}
+#| include: false
+
+library(bcdata)
+library(tidyverse)
+library(readr)
+library(knitr)
+```
+
+
+```{r}
+bcdc_search("values")
+```
+
+The code above is proprietary to bcdata and allows me to search for datasets using key
+terms such as "demographics" or "public health."
+
+# Data 
+
+Link to data guide: https://www2.gov.bc.ca/assets/gov/data/statistics/people-population-community/socio-economic/bcstatsnewslettermay2026socioeconomicindex.pdf
+
+Select "2" to get Census Subdivision Data. This type of data aggregates regions
+into municipalities, not health regions (which are usually smaller).
+
+```{r}
+#| include: false
+
+bc_ses_data <- bcdc_get_data("b-c-socioeconomic-index")
+```
+
+# Question
+
+RQ1: How does socioeconomic index differ across different municipal regions in 
+British Columbia?
+
+# Simulate
+
+```{r}
+set.seed(1738)
+
+simulated_ses_data <- tibble(
+  City = c("Victoria", "Oak Bay", "Vancouver", "Burnaby"),
+  Economics = sample(1:100, size = 4),
+  Education = sample(1:100, size = 4),
+  Health = sample(1:100, size = 4),
+  Community = sample(1:100, size = 4),
+  SEI = rowMeans(data.frame(Economics, Education, Health, Community))
+)
+
+simulated_ses_data
+```
+
+So when i change this, does it show up on Github?
+
+
+
+
