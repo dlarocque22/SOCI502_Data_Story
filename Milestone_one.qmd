@@ -1,8 +1,20 @@
 ---
 title: "Data Story: Milestone One"
 author: Daichi Larocque
-format: html
+format: pdf
+bibliography: bibliography.bib
+abstract: This is my abstract.
 ---
+
+# Introduction & Rationale
+
+
+
+# Plan
+
+Please see attached PDF in assignment.
+
+# Data 
 
 ```{r}
 #| include: false
@@ -13,26 +25,26 @@ library(readr)
 library(knitr)
 ```
 
-
 ```{r}
-bcdc_search("values")
+bcdc_search("socioeconomic")
 ```
 
-The code above is proprietary to bcdata and allows me to search for datasets using key
-terms such as "demographics" or "public health."
+The code above is proprietary to 'bcdata' and allows me to search for data sets 
+using key terms such as "socioeconomic" or "public health."
 
-# Data 
-
-Link to data guide: https://www2.gov.bc.ca/assets/gov/data/statistics/people-population-community/socio-economic/bcstatsnewslettermay2026socioeconomicindex.pdf
-
-Select "2" to get Census Subdivision Data. This type of data aggregates regions
-into municipalities, not health regions (which are usually smaller).
+Link to data guide: https://www2.gov.bc.ca/assets/gov/data/statistics
+/people-population-community/socio-economic/bcstatsnewslettermay
+2026socioeconomicindex.pdf
 
 ```{r}
 #| include: false
 
-bc_ses_data <- bcdc_get_data("b-c-socioeconomic-index")
+#bc_ses_data <- bcdc_get_data("b-c-socioeconomic-index")
 ```
+
+Uncomment the function above to use it, it will not render if it not commented. 
+Select "2" to get Census Subdivision Data. This type of data aggregates regions 
+into municipalities, not health regions (which are usually smaller).
 
 # Question
 
@@ -56,10 +68,11 @@ simulated_ses_data <- tibble(
 simulated_ses_data
 ```
 
-So when i change this, does it show up on Github?
+The code chunk above runs a simulation that randomly assigns values from 1-100
+in domains of income (economics), education level, population health variables, 
+and community cohesion variables. The socioeconomic index (SEI) takes scores 
+on each of these domains to calculate an overall index and to show scores on
+each domain [@bcdata].
 
-Now I am changing this doc
-
-
-
+# References
 
