@@ -1,5 +1,5 @@
 ---
-title: "Milestone One: Examining Socioeconomic Well-Being in Municipal Regions in British Columbia"
+title: "Milestone One: Exploring Socioeconomic Well-Being in Municipal Regions in British Columbia"
 author: Daichi Larocque
 format: pdf
 bibliography: bibliography.bib
@@ -19,8 +19,8 @@ the detailed model which contains SEI variables for 2023. Although in a differen
 The SEI index data is accessed through proprietary code provided by BC Stats which allows researchers to get various provincial datasets. The SEI index allows for meaningful sociological analysis, giving a holistic measure of social well-being across municipal regions in the province. As such, I plan to use this dataset to undertake a exploratory descriptive analysis of SEI scores across municipal regions. To achieve this, I will ask the following research
 question:
 
-  **RQ:** How does socioeconomic index (SEI) differ across different municipal regions 
-in BC?
+  **RQ:** How does socioeconomic index differ across different municipal regions 
+in British Columbia?
 
   This question will allow me to conduct an exploratory analysis using the
 Tidyverse to view the SEI index in a table and various graph formats [@Tidyverse]. 
@@ -67,35 +67,76 @@ into municipalities, not health regions, which are usually smaller [@bcstats2026
 
 # Simulate
 
-  The simulation randomly assigns values from 1-100 in domains of income (economics), 
+  The first simulation randomly assigns values from 1-100 in domains of income (economics), 
 education level, population health variables, and community cohesion variables. 
 The socioeconomic index (SEI) takes scores on each of these domains to calculate an overall 
-simulated index [@bcdata]. These scores will differ in the actual data.
+simulated index [@bcdata]. The second simulation separates SEI values by either
+Victoria or Vancouver regional districts and gives us an average SEI score for each
+regional district. These scores will differ in the actual data.
 
 ```{r, results='hide'}
 set.seed(1738)
 
-simulated_ses_data <- tibble(
-  City = c("Victoria", "Oak Bay", "Vancouver", "Burnaby"),
-  Economics = sample(1:100, size = 4),
-  Education = sample(1:100, size = 4),
-  Health = sample(1:100, size = 4),
-  Community = sample(1:100, size = 4),
+simulated_sei_data <- tibble(
+  Municipality = c("Victoria", "Saanich", "Cental Saanich", "Oak Bay", 
+           "North Saanich", "Sidney", "Langford", "View Royal", 
+           "Colwood", "Esquimalt", "Metchosin",
+           "Vancouver", "Richmond", "Burnaby", "Surrey", "Delta", 
+           "New Westminister", "North Vancouver", "West Vancouver", 
+           "Coquitlam"),
+  Economics = sample(1:100, size = 20),
+  Education = sample(1:100, size = 20),
+  Health = sample(1:100, size = 20),
+  Community = sample(1:100, size = 20),
   SEI = rowMeans(data.frame(Economics, Education, Health, Community))
 )
 
-simulated_ses_data
+simulated_sei_data
 ```
 
-  Now we can use Tinytable to print a cleaner table of the simulated data 
-[@Tinytable].
+```{r, results='hide'}
+set.seed(1738)
+
+simulated_regional_sei_data <- simulated_sei_data |>
+  mutate(
+    Region = recode_values(
+      Municipality,
+      c("Victoria", "Saanich", "Cental Saanich", "Oak Bay", "North Saanich",
+           "Sidney", "Langford", "View Royal", "Colwood", "Esquimalt", 
+        "Metchosin") ~ "Greater Victoria Region",
+      c("Vancouver", "Richmond", "Burnaby", "Surrey", "Delta", 
+           "New Westminister", "North Vancouver", "West Vancouver", 
+        "Coquitlam") ~ "Vancouver Metropolitan Area"
+    )
+  ) |>
+
+group_by(Region) |>
+  summarise(
+    AverageSEI = mean(SEI)
+  )
+
+simulated_regional_sei_data
+```
+
+  Now we can use Tinytable to print cleaner tables of the simulated data 
+[@Tinytable]. The first table shows SEI for discrete municipalities and the second 
+table shows the mean SEI for the Vancouver and Victoria regional districts respectively.
 
 ```{r}
 #| label: tbl-simulated-sei-data
 #| tbl-cap: "Simulated SEI Data"
 #| tbl-pos: H
 
-simulated_ses_data |>
+simulated_sei_data |>
+  tt()
+```
+
+```{r}
+#| label: tbl-simulated-regional-sei-data
+#| tbl-cap: "Average Simulated SEI Data by Regional District (Victoria and Vancouver)"
+#| tbl-pos: H
+
+simulated_regional_sei_data |>
   tt()
 ```
 
