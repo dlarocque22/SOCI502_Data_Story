@@ -3,11 +3,27 @@ title: "Data Story: Milestone One"
 author: Daichi Larocque
 format: pdf
 bibliography: bibliography.bib
-abstract: This is my abstract.
 ---
 
-# Introduction & Rationale
+# Introduction & Question
 
+The British Columbia (BC) socioeconomic index (SEI) is a data set provided by 
+BC Stats which uses measures of income, health, education, and community
+cohesion to develop a well-being indicator by municipality or community health 
+service area [@bcstats2026sei]. The data is accessed through proprietary code
+provided by BC Stats which allows researchers to get provincial data. The SEI
+index is a data set provided by the government that allow for meaningful
+sociological analysis, giving a holistic measure of social well-being across
+municipal regions in the province. As such, I plan to use this data set to
+undertake a exploratory descriptive analysis of SEI scores across 
+municipal regions. To achieve this, I will ask the following research
+question:
+
+RQ: How does socioeconomic index (SEI) differ across different municipal regions 
+in BC?
+
+This question will allow me to use a tibble from the Tidyverse to view the
+SEI index in a table and various graph formats [@Tidyverse].
 
 
 # Plan
@@ -21,11 +37,12 @@ Please see attached PDF in assignment.
 
 library(bcdata)
 library(tidyverse)
-library(readr)
-library(knitr)
+library(tinytable)
 ```
 
 ```{r}
+#| include: false
+
 bcdc_search("socioeconomic")
 ```
 
@@ -42,14 +59,9 @@ Link to data guide: https://www2.gov.bc.ca/assets/gov/data/statistics
 #bc_ses_data <- bcdc_get_data("b-c-socioeconomic-index")
 ```
 
-Uncomment the function above to use it, it will not render if it not commented. 
+Uncomment the function above to use it, the document will not render if it not commented. 
 Select "2" to get Census Subdivision Data. This type of data aggregates regions 
-into municipalities, not health regions (which are usually smaller).
-
-# Question
-
-RQ1: How does socioeconomic index differ across different municipal regions in 
-British Columbia?
+into municipalities, not health regions, which are usually smaller [@bcstats2026sei].
 
 # Simulate
 
@@ -74,5 +86,17 @@ and community cohesion variables. The socioeconomic index (SEI) takes scores
 on each of these domains to calculate an overall index and to show scores on
 each domain [@bcdata].
 
+```{r}
+simulated_ses_data |>
+  tt()
+```
+
+The code above uses Tinytable to print a cleaner table of the simulated data 
+[@Tinytable].
+
+
+
 # References
+
+
 
