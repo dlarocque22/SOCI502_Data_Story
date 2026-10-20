@@ -7,7 +7,7 @@ bibliography: bibliography.bib
 
 # Introduction & Question
 
-  The British Columbia (BC) socioeconomic index (SEI) is a dataset provided by 
+  The British Columbia (BC) Socioeconomic Index (SEI) is a dataset provided by 
 BC Stats which uses measures of income, health, education, and community
 cohesion to develop a socioeconomic well-being indicator by municipality or community health 
 service area [@bcstats2026sei]. The economic domain captures income, employment, and housing indicators. The education domain captures educational attainment and course completion. The health domain captures prevalence of health conditions. Lastly, the community domain captures social cohesion through measures such as crime rates, marital status, and rates of income assistance. Each of these four indicators have been consistently used in social health literature as meaningful determinants of health and well-being (please see the [methodology report](https://www2.gov.bc.ca/assets/gov/data/statistics/economy/economic-other/socioeconomic_index_bc_methodology_report.pdf) for more information). The SEI is a accumulation of the four 
@@ -16,21 +16,21 @@ domains, with a mean of 50 and standard deviation of 10.
   The dataset provides two primary models, a longitudinal model and 
 a detailed model. For the purposes of this project, I will be using
 the detailed model which contains SEI variables for 2023. Although in a different analysis, the longitudinal model could provide interesting findings on temporal social well-being trends.
-The SEI index data is accessed through proprietary code provided by BC Stats which allows researchers to get various provincial datasets. The SEI index allows for meaningful sociological analysis, giving a holistic measure of social well-being across municipal regions in the province. As such, I plan to use this dataset to undertake a exploratory descriptive analysis of SEI scores across municipal regions. To achieve this, I will ask the following research
+The SEI data is accessed through proprietary code provided by BC Stats which allows researchers to get various provincial datasets. The SEI allows for meaningful sociological analysis, giving a holistic measure of social well-being across municipal regions in the province. As such, I plan to use this dataset to undertake a exploratory descriptive analysis of SEI scores across municipal regions. To achieve this, I will ask the following research
 question:
 
   **RQ:** How does socioeconomic index differ across different municipal regions 
 in British Columbia?
 
   This question will allow me to conduct an exploratory analysis using the
-Tidyverse to view the SEI index in a table and various graph formats [@Tidyverse]. 
+Tidyverse to view the SEI in a table and various graph formats [@Tidyverse]. 
 There are many patterns that could be found in the data that would answer the question. 
 One primary finding is how well-being is reported across various municipal regions, 
 which could help policy-makers direct resources or funding to municipalities
-that score low in one of the domains or have a low SEI index in general. 
+that score low in one of the domains or have a low SEI in general. 
 Moreover, we could also use this data to look a rural/urban divide trends, examining 
 whether there exist discrepancies in SEI reports among urban or rural 
-communities. Most interestingly to me, I want to see how the SEI index
+communities. Most interestingly to me, I want to see how the SEI
 differs across two major urban centers in BC - the Greater Victoria Region and 
 the Metro Vancouver Regional District. All of these potential findings can be
 extrapolated from this data through basic descriptive analysis.
@@ -55,7 +55,7 @@ bcdc_search("socioeconomic")
 ```
 
   The code above is proprietary to 'bcdata' and allows me to search for datasets 
-using key terms such as "socioeconomic" or "public health."
+using key terms such as "socioeconomic" or "public health" [@bcdata].
 
 ```{r}
 #bc_ses_data <- bcdc_get_data("b-c-socioeconomic-index")
@@ -69,8 +69,8 @@ into municipalities, not health regions, which are usually smaller [@bcstats2026
 
   The first simulation randomly assigns values from 1-100 in domains of income (economics), 
 education level, population health variables, and community cohesion variables. 
-The socioeconomic index (SEI) takes scores on each of these domains to calculate an overall 
-simulated index [@bcdata]. The second simulation separates SEI values by either
+The SEI takes scores on each of these domains to calculate an overall 
+simulated index [@bcstats2026sei]. The second simulation separates SEI values by either
 Victoria or Vancouver regional districts and gives us an average SEI score for each
 regional district. These scores will differ in the actual data.
 
