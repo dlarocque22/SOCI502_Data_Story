@@ -19,7 +19,7 @@ the detailed model which contains SEI variables for 2023. Although in a differen
 The SEI data is accessed through proprietary code provided by BC Stats which allows researchers to get various provincial datasets. The SEI allows for meaningful sociological analysis, giving a holistic measure of social well-being across municipal regions in the province. As such, I plan to use this dataset to undertake a exploratory descriptive analysis of SEI scores across municipal regions. To achieve this, I will ask the following research
 question:
 
-  **RQ:** How does socioeconomic index differ across different municipal regions 
+  **RQ:** How does socioeconomic index change across different municipal regions 
 in British Columbia?
 
   This question will allow me to conduct an exploratory analysis using the
