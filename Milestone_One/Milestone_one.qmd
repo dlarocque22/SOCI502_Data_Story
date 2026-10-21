@@ -14,7 +14,7 @@ service area [@bcstats2026sei]. The economic domain captures income, employment,
 domains, with a mean of 50 and standard deviation of 10. 
 
   The dataset provides two primary models, a longitudinal model and 
-a detailed model. For the purposes of this project, I will be using
+a detailed model [@bcstats2026sei]. For the purposes of this project, I will be using
 the detailed model which contains SEI variables for 2023. Although in a different analysis, the longitudinal model could provide interesting findings on temporal social well-being trends.
 The SEI data is accessed through proprietary code provided by BC Stats which allows researchers to get various provincial datasets. The SEI allows for meaningful sociological analysis, giving a holistic measure of social well-being across municipal regions in the province. As such, I plan to use this dataset to undertake a exploratory descriptive analysis of SEI scores across municipal regions. To achieve this, I will ask the following research
 question:
@@ -38,7 +38,7 @@ extrapolated from this data through basic descriptive analysis.
 
 # Plan
 
-  Please see attached PDF in assignment or GitHub repository.
+  Please see attached PDF in assignment or Github repository.
 
 # Data 
 
