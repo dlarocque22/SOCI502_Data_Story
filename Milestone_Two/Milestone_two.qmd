@@ -3,3 +3,32 @@ title: "Milestone_two"
 format: html
 ---
 
+```{r}
+library(bcdata)
+library(tidyverse) 
+```
+
+```{r}
+bc_ses_data_raw <- bcdc_get_data("b-c-socioeconomic-index")
+```
+
+```{r}
+write_csv(bc_ses_data_raw, "bc_ses_data_raw.csv")
+```
+
+After writing the dataset onto my computer, I have made a copy of the dataset
+to keep the original file. 
+
+```{r}
+socioeconomic_index_raw <- read.csv("bc_ses_data_raw.csv")
+```
+
+reading in the data shows us the dataset
+
+# Cleaning
+
+For cleaning, I am going to see what class of data I have.
+
+```{r}
+head(socioeconomic_index_raw)
+```
