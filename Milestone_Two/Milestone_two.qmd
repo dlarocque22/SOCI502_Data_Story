@@ -4,9 +4,10 @@ format: pdf
 author: Daichi Larocque
 ---
 
-```{r}
+```{r, results='hide'}
 library(bcdata)
-library(tidyverse) 
+library(tidyverse)
+library(tinytable)
 ```
 
 ```{r, results='hide'}
@@ -47,7 +48,7 @@ cleaned_socioeconomic_index <- cleaned_socioeconomic_index |>
     MUN_NAME_2021 %in% c(
     "Anmore", "Belcarra", "Bowen Island", "Burnaby",
     "Coquitlam", "Delta", "Langley", "Lions Bay", "Maple Ridge", 
-    "Metro Vancouver A", "New   Westminister", "North Vancouver", 
+    "Metro Vancouver A", "New Westminster", "North Vancouver", 
     "Pitt Meadows", "Port Coquitlam", "Port Moody", "Richmond",
     "Surrey", "Vancouver", "West Vancouver", "White Rock", "Central Saanich",
     "Colwood", "Esquimalt", "Highlands", "Juan de Fuca (Part 1)", 
@@ -98,6 +99,8 @@ cleaned_socioeconomic_index <- cleaned_socioeconomic_index |>
 Now, lets make it so that the index data only goes up to two decminal points.
 
 ```{r}
+index_decimal <- 2
+
 cleaned_socioeconomic_index <- cleaned_socioeconomic_index |>
   mutate(
     across(
@@ -109,10 +112,76 @@ cleaned_socioeconomic_index <- cleaned_socioeconomic_index |>
         Health, 
         Community
     ), 
-    round, digits = 2
+    round, digits = index_decimal
   )
 )
 
 cleaned_socioeconomic_index |>
   as_tibble()
 ```
+
+```{r}
+age_decimal <- 0
+
+cleaned_socioeconomic_index <- cleaned_socioeconomic_index |>
+  mutate(
+    across(
+      c(
+        Average_Age
+      ),
+      round, digits = age_decimal
+  )
+)
+
+cleaned_socioeconomic_index |>
+  as_tibble()
+```
+
+# Tests
+
+I have two basic tests I want to run before diving into more contextual ones.
+The first is to make sure all variables 
+are proper class. I am doing this by using the stopifnot function, which will
+stop running the code if it detects a variable that is not the 
+proper class. The second is to make sure there are no negative values 
+in the numeric variables. This code uses a logical if/else function
+to print out true or false statements depending on whether number less than 
+zero are found in each variable.
+
+```{r}
+stopifnot(
+  "Municipality must be a character" = is.character(cleaned_socioeconomic_index$Municipality),
+  "Population must be numeric" = is.numeric(cleaned_socioeconomic_index$Population_2023),
+  "Average age must be numeric" = is.numeric(cleaned_socioeconomic_index$Average_Age),
+  "Total index must be numeric" = is.numeric(cleaned_socioeconomic_index$Total_Index),
+  "SEI Index muste be numeric" = is.numeric(cleaned_socioeconomic_index$Socioeconomic_Index),
+  "Community must be numeric" = is.numeric(cleaned_socioeconomic_index$Community),
+  "Health must be numeric" = is.numeric(cleaned_socioeconomic_index$Health),
+  "Education must be numeric" = is.numeric(cleaned_socioeconomic_index$Education),
+  "Economics must be numeric" = is.numeric(cleaned_socioeconomic_index$Economics)
+)
+```
+
+```{r}
+numeric_variables <- c(
+  "Population_2023", "Average_Age", "Total_Index", "Socioeconomic_Index",
+  "Community", "Health", "Education", "Economics"
+)
+
+for(SEI_var in numeric_variables) {
+  if(any(cleaned_socioeconomic_index[[SEI_var]] < 0, na.rm = TRUE)) {
+    stop(
+      paste("Stop, there are negative values in the", SEI_var, "variable"))
+ } else {
+    message(
+      paste("Passed, there are no negative values in the", SEI_var, "variable") 
+  )
+ }
+}
+```
+
+Looks like all the tests passed and there are no negative numbers where there
+should not be.
+
+
+

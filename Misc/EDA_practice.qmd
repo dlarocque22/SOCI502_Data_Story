@@ -1,0 +1,191 @@
+---
+title: "EDA_Practice"
+format: html
+---
+
+# Cleaning
+
+```{r}
+library(bcdata)
+library(tidyverse)
+library(tinytable)
+```
+
+```{r, results='hide'}
+#bc_sei_data_raw <- bcdc_get_data("b-c-socioeconomic-index")
+```
+
+```{r results='hide'}
+#write_csv(bc_sei_data_raw, "bc_sei_data_raw.csv")
+```
+
+After writing the dataset onto my computer, I have made a copy of the dataset
+to keep the original file. 
+
+```{r results='hide'}
+socioeconomic_index_raw <- read_csv("bc_sei_data_raw.csv")
+```
+
+# Cleaning
+
+Let's gat a sense of the data here.
+
+```{r}
+head(socioeconomic_index_raw)
+```
+
+First, I will get rid of columns that I do not need.
+
+```{r}
+cleaned_socioeconomic_index <- socioeconomic_index_raw |>
+  select(-CALENDAR_YEAR)
+```
+
+Now, I will only include the municipalities of interest.
+
+```{r}
+cleaned_socioeconomic_index <- cleaned_socioeconomic_index |>
+  filter(
+    MUN_NAME_2021 %in% c(
+    "Anmore", "Belcarra", "Bowen Island", "Burnaby",
+    "Coquitlam", "Delta", "Langley", "Lions Bay", "Maple Ridge", 
+    "Metro Vancouver A", "New   Westminister", "North Vancouver", 
+    "Pitt Meadows", "Port Coquitlam", "Port Moody", "Richmond",
+    "Surrey", "Vancouver", "West Vancouver", "White Rock", "Central Saanich",
+    "Colwood", "Esquimalt", "Highlands", "Juan de Fuca (Part 1)", 
+    "Juan de Fuca (Part 2)", "Langford", "Metchosin", "North Saanich",
+    "Oak Bay", "Saanich", "Sidney", "Sooke", "Victoria", "View Royal"
+  )
+)
+```
+
+In the dataset, some municipalities are named twice because they contain sub-regions 
+or districts. It is important that we give these better identifiers so that we can
+be more precise in our analysis.
+
+
+```{r}
+cleaned_socioeconomic_index <- cleaned_socioeconomic_index |>
+  mutate(
+    MUN_NAME_2021 = case_when(
+    CSD_UID == "5915002" ~ "City of Langley",
+    CSD_UID == "5915001" ~ "Township of Langley",
+    CSD_UID == "5915020" ~ "Electoral Area A (UBC)",
+    CSD_UID == "5915051" ~ "City of North Vancouver",
+    CSD_UID == "5915046" ~ "District of North Vancouver",
+    CSD_UID == "5917054" ~ "Juan de Fuca (Part 1, Shirley, Jordan River, Malahat)",
+    CSD_UID == "5917056" ~ "Juan de Fuca (Part 2, Port Renfrew)",
+    TRUE ~ MUN_NAME_2021
+  )
+)
+```
+
+Let's also rename the columns
+
+```{r}
+cleaned_socioeconomic_index <- cleaned_socioeconomic_index |>
+  rename(
+    Municipality = MUN_NAME_2021,
+    Average_Age = AVERAGE_AGE,
+    Population_2023 = POPULATION_ESTIMATE,
+    Total_Index = TOTAL_INDEX_0_100,
+    Socioeconomic_Index = SEI_INDEX_0_100,
+    Economics = ECON_0_100,
+    Education = EDUC_0_100,
+    Health = HEALTH_0_100,
+    Community = COMMUNITY_0_100
+  )
+```
+
+Now, lets make it so that the index data only goes up to two decminal points.
+
+```{r}
+index_decimal <- 2
+
+cleaned_socioeconomic_index <- cleaned_socioeconomic_index |>
+  mutate(
+    across(
+      c(
+        Total_Index, 
+        Socioeconomic_Index, 
+        Economics,
+        Education,
+        Health, 
+        Community
+    ), 
+    round, digits = index_decimal
+  )
+)
+
+cleaned_socioeconomic_index |>
+  as_tibble()
+```
+
+```{r}
+age_decimal <- 0
+
+cleaned_socioeconomic_index <- cleaned_socioeconomic_index |>
+  mutate(
+    across(
+      c(
+        Average_Age
+      ),
+      round, digits = age_decimal
+  )
+)
+
+cleaned_socioeconomic_index |>
+  as_tibble()
+```
+
+# EDA Practice
+
+Gonna run some exploratory analysis on the cleaned SEI data index.
+
+```{r}
+head(cleaned_socioeconomic_index)
+```
+
+```{r}
+tail(cleaned_socioeconomic_index)
+```
+
+```{r}
+glimpse(cleaned_socioeconomic_index)
+```
+
+```{r}
+summary(cleaned_socioeconomic_index)
+```
+
+#Histogram
+
+```{r}
+cleaned_socioeconomic_index |>
+  ggplot(aes(x = Socioeconomic_Index)) +
+  geom_histogram(binwidth = 1) +
+  labs(
+    title = "Distribution of SEI Scores",
+    x = "SEI Index"
+  ) +
+  theme_minimal()
+```
+
+# Scatterplot
+
+```{r}
+cleaned_socioeconomic_index |>
+  ggplot(aes(x = Socioeconomic_Index, y = Population_2023)) +
+  geom_point(colour = "pink") +
+  scale_y_continuous(labels = scales::label_comma()) + 
+  labs(
+    title = "SEI as a Function of Population",
+    x = "SEI Index Score",
+    y = "Population"
+  ) +
+  theme_minimal()
+```
+
+
+
+
