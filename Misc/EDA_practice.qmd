@@ -158,7 +158,7 @@ glimpse(cleaned_socioeconomic_index)
 summary(cleaned_socioeconomic_index)
 ```
 
-#Histogram
+# Histogram
 
 ```{r}
 cleaned_socioeconomic_index |>
