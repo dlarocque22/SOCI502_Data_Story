@@ -1,0 +1,179 @@
+---
+title: "SEI_EDA"
+format: html
+author: Daichi Larocque
+---
+
+# Exploratory Data Analysis
+
+Before making any graphs, I am gonna get a glimpe of the data and run some
+basic descriptive statistics to get a sense of central tendency and 
+variability in the data.
+
+```{r}
+head(cleaned_socioeconomic_index)
+```
+
+```{r}
+tail(cleaned_socioeconomic_index)
+```
+
+```{r}
+summary(cleaned_socioeconomic_index)
+```
+
+## Bar Graphs
+
+First, I want to create a bar graph that shows SEI score by each municipality. I
+also reordered the municipalities so that they are ordered from highest SEI score
+to lowest SEI score. I create a new variable that encapsulates all
+the municipalities in Metro Vancouver. Then, I use a logical if_else
+function to mutate the dataset so that the rest of the municipalities 
+not included in Metro Vancouver are placed in Greater Victoria.
+
+```{r}
+metro_vancouver <- c(
+  "Anmore", "Belcarra", "Bowen Island", "Burnaby", "City of Langley",
+  "City of North Vancouver", "Coquitlam", "Delta", 
+  "District of North Vancouver", "Electoral Area A (UBC)", "Lions Bay", 
+  "Maple Ridge", "New Westminister", "Pitt Meadows", "Port Coquitlam", 
+  "Port Moody", "Richmond", "Surrey", "Township of Langley", "Vancouver", 
+  "West Vancouver", "White Rock"
+)
+
+
+cleaned_socioeconomic_index |>
+  mutate(
+    Region = if_else(
+      Municipality %in% metro_vancouver, "Metro Vancouver", 
+      "Greater Victoria Region"
+      ),
+    Municipality = reorder(Municipality, Socioeconomic_Index)
+      ) |>
+  
+  ggplot(
+    aes(
+      x = Municipality, y = Socioeconomic_Index, fill = Region
+      )
+    ) +
+      geom_col(
+        colour = "black", width = 0.5
+    ) +
+      coord_flip() +
+      scale_fill_manual(
+        values = c("Metro Vancouver" = "skyblue", "Greater Victoria Region" =
+        "forestgreen")
+    ) +
+      labs(
+        title = "SEI Score by Municipality: Metro Vancouver & Greater Victoria",
+        x = "Municipality",
+        y = "SEI Score",
+        fill = "Region"
+    ) +
+      theme_minimal(
+        base_size = 8
+    ) +
+      theme(
+        legend.position = "bottom"
+      )
+```
+
+Alternatively, here is a bar graph that separates SEI scores by metropolitan
+region. This gives us an interesting peek into well-being index scores by
+metropolitan region.
+
+```{r}
+metro_vancouver <- c(
+  "Anmore", "Belcarra", "Bowen Island", "Burnaby", "City of Langley",
+  "City of North Vancouver", "Coquitlam", "Delta", 
+  "District of North Vancouver", "Electoral Area A (UBC)", "Lions Bay", 
+  "Maple Ridge", "New Westminister", "Pitt Meadows", "Port Coquitlam", 
+  "Port Moody", "Richmond", "Surrey", "Township of Langley", "Vancouver", 
+  "West Vancouver", "White Rock"
+)
+
+cleaned_socioeconomic_index |>
+  mutate(
+    Region = if_else(
+      Municipality %in% metro_vancouver, "Metro Vancouver", 
+      "Greater Victoria Region"
+      ),
+    Municipality = reorder(Municipality, Socioeconomic_Index)
+      ) |>
+  
+    ggplot(
+      aes(
+        x = Municipality, y = Socioeconomic_Index
+        )
+      ) +
+      geom_col(
+        fill = "lavender", colour = "black", width = 0.5
+      ) +
+      coord_flip(
+      ) +
+      facet_grid(
+        Region ~ ., scales = "free_y", space = "free"
+      ) +
+      labs(
+        title = "Comparing SEI Index By Metropolitan Region",
+        x = "Metropolitan Region",
+        y = "SEI Index"
+      ) +
+      theme_minimal(
+        base_size = 8
+      )
+```
+
+Based on this graph, we can see that SEI index scores are relatively higher 
+in the Metro Vancouver region than the Greater Victoria Region. 
+
+## Box Plot
+
+Lastly, we can create a box plot to see the distribution of scores across key
+numeric variables in my dataset. We will look at education, heath, community,
+economics, and SEI index. 
+
+First, I am going to use the pivot_longer function to reshape my data, the 
+names_to argument makes a new column at the end of the dataset, inputting each 
+dimension (Education, Heath, etc...) in a separate row within this new column 
+for each municipality. The values_to argument prints the scores to each 
+respective dimension into a new column. The reason I am reshaping the data is 
+because it makes it easier for ggplot to differentiate each dimension. It 
+creates five separate rows for each municipality, instead of each municiaplity 
+only having one row containing all five dimensions.
+
+
+```{r}
+cleaned_socioeconomic_index |> 
+  pivot_longer(
+    c(
+      Education, Health, Community, Economics, Socioeconomic_Index
+      ),
+    names_to = "Wellbeing_Dimension",
+    values_to = "Score"
+    ) |>
+
+ggplot(
+  aes(
+    x = Wellbeing_Dimension, y = Score, fill = Wellbeing_Dimension
+    )
+  ) +
+  geom_boxplot(
+    alpha = 0.7, width = 0.5, outlier.color = "black"
+  ) +
+  labs(
+    title = "Distribution of Health, Education, Community, Economics, and SEI Scores",
+    x = "Index Dimension",
+    y = "Score"
+  ) +
+  theme_minimal(
+    base_size = 6
+  )
+```
+
+Based on this graph, we can see that economics has the highest median index score,
+while health has the lowest. The median SEI index is floating around a score of 55
+out of 100. It also seems that education has the largest variability within
+the 25th and 75th percentile and community has the lowest variability within
+the 25th and 75th percentile. The black dots above and below each box represent
+outliers that I should revisit and check.

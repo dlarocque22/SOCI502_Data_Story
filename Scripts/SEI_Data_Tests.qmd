@@ -6,26 +6,35 @@ author: Daichi Larocque
 
 # Tests
 
-I have two basic tests I want to run before diving into more contextual ones.
-The first is to make sure all variables 
-are proper class. I am doing this by using the stopifnot function, which will
-stop running the code if it detects a variable that is not the 
-proper class. The second is to make sure there are no negative values 
-in the numeric variables. This code uses a logical if/else function
-to print out true or false statements depending on whether number less than 
-zero are found in each variable.
+I have two basic tests I want to run. 
+The first is to make sure all variables are proper class. I am
+doing this by using the stopifnot function, which will stop running the
+code if it detects a variable that is not the proper class. The second
+is to make sure there are no negative values in the numeric variables.
+This code uses a logical if/else function to print out either 'passed' or 'stop'
+statements depending on whether number less than zero are found in each
+variable.
 
 ```{r}
 stopifnot(
-  "Municipality must be a character" = is.character(cleaned_socioeconomic_index$Municipality),
-  "Population must be numeric" = is.numeric(cleaned_socioeconomic_index$Population_2023),
-  "Average age must be numeric" = is.numeric(cleaned_socioeconomic_index$Average_Age),
-  "Total index must be numeric" = is.numeric(cleaned_socioeconomic_index$Total_Index),
-  "SEI Index muste be numeric" = is.numeric(cleaned_socioeconomic_index$Socioeconomic_Index),
-  "Community must be numeric" = is.numeric(cleaned_socioeconomic_index$Community),
-  "Health must be numeric" = is.numeric(cleaned_socioeconomic_index$Health),
-  "Education must be numeric" = is.numeric(cleaned_socioeconomic_index$Education),
-  "Economics must be numeric" = is.numeric(cleaned_socioeconomic_index$Economics)
+  "Municipality must be a character" = 
+    is.character(cleaned_socioeconomic_index$Municipality),
+  "Population must be numeric" = 
+    is.numeric(cleaned_socioeconomic_index$Population_2023),
+  "Average age must be numeric" = 
+    is.numeric(cleaned_socioeconomic_index$Average_Age),
+  "Total index must be numeric" = 
+    is.numeric(cleaned_socioeconomic_index$Total_Index),
+  "SEI Index muste be numeric" = 
+    is.numeric(cleaned_socioeconomic_index$Socioeconomic_Index),
+  "Community must be numeric" = 
+    is.numeric(cleaned_socioeconomic_index$Community),
+  "Health must be numeric" = 
+    is.numeric(cleaned_socioeconomic_index$Health),
+  "Education must be numeric" = 
+    is.numeric(cleaned_socioeconomic_index$Education),
+  "Economics must be numeric" = 
+    is.numeric(cleaned_socioeconomic_index$Economics)
 )
 ```
 
@@ -35,18 +44,19 @@ numeric_variables <- c(
   "Community", "Health", "Education", "Economics"
 )
 
-for(SEI_var in numeric_variables) {
-  if(any(cleaned_socioeconomic_index[[SEI_var]] < 0, na.rm = TRUE)) {
-    stop(
-      paste("Stop, there are negative values in the", SEI_var, "variable"))
+for(
+  SEI_var in numeric_variables) {
+    if(any(cleaned_socioeconomic_index[[SEI_var]] < 0, na.rm = TRUE)) {
+      stop(
+        paste("Stop, there are negative values in the", SEI_var, "variable"))
  } else {
-    message(
-      paste("Passed, there are no negative values in the", SEI_var, "variable") 
+      message(
+        paste("Passed, there are no negative values in the", SEI_var, 
+              "variable") 
   )
  }
 }
 ```
 
-Now that I have conducted some basic tests, I can do some tests that 
-are contexutally relevant to this dataset.
-
+Looks like all the tests passed and there are no negative numbers where
+there should not be.

@@ -4,43 +4,49 @@ format: pdf
 author: Daichi Larocque
 ---
 
-```{r, results='hide'}
+# Workflow Set-Up
+
+```{r}
+#| message: false
+
 library(bcdata)
 library(tidyverse)
-library(tinytable)
 ```
 
-```{r, results='hide'}
-bc_sei_data_raw <- bcdc_get_data("b-c-socioeconomic-index")
+```{r}
+#bc_sei_data_raw <- bcdc_get_data("b-c-socioeconomic-index")
 ```
 
-```{r results='hide'}
-write_csv(bc_sei_data_raw, "bc_sei_data_raw.csv")
+```{r}
+#write_csv(bc_sei_data_raw, "bc_sei_data_raw.csv")
 ```
 
-After writing the dataset onto my computer, I have made a copy of the dataset
-to keep the original file. 
+After writing the dataset onto my computer and into the milestone two directory,
+I also saved a copy of the raw data into the 'data' directory in the Githib
+repository for safe keeping.
 
-```{r results='hide'}
+```{r}
+#| message: false
+
 socioeconomic_index_raw <- read_csv("bc_sei_data_raw.csv")
 ```
 
 # Cleaning
 
-Let's gat a sense of the data here.
-
-```{r}
-head(socioeconomic_index_raw)
-```
-
-First, I will get rid of columns that I do not need.
+First, I will get rid of columns that I do not need. The calendar year column
+does not make much sense for our analysis, as all of this data comes from 2023.
+The reason this column exists is because BC Stats also provides longitudinal 
+data on SEI measures. For the purposes of this analysis, I will not be using 
+longitudinal data.
 
 ```{r}
 cleaned_socioeconomic_index <- socioeconomic_index_raw |>
   select(-CALENDAR_YEAR)
 ```
 
-Now, I will only include the municipalities of interest.
+Now, I will only include the municipalities of interest. For the purposes of
+this data story, I am only considering municipalities within the Metro
+Vancouver Region and the Greater Victoria Region.
 
 ```{r}
 cleaned_socioeconomic_index <- cleaned_socioeconomic_index |>
@@ -58,10 +64,9 @@ cleaned_socioeconomic_index <- cleaned_socioeconomic_index |>
 )
 ```
 
-In the dataset, some municipalities are named twice because they contain sub-regions 
-or districts. It is important that we give these better identifiers so that we can
-be more precise in our analysis.
-
+In the dataset, some municipalities are named twice because they contain
+sub-regions or districts. It is important that we give these better
+identifiers so that we can be more precise in our analysis.
 
 ```{r}
 cleaned_socioeconomic_index <- cleaned_socioeconomic_index |>
@@ -72,7 +77,8 @@ cleaned_socioeconomic_index <- cleaned_socioeconomic_index |>
     CSD_UID == "5915020" ~ "Electoral Area A (UBC)",
     CSD_UID == "5915051" ~ "City of North Vancouver",
     CSD_UID == "5915046" ~ "District of North Vancouver",
-    CSD_UID == "5917054" ~ "Juan de Fuca (Part 1, Shirley, Jordan River, Malahat)",
+    CSD_UID == "5917054" ~ "Juan de Fuca (Part 1, Shirley, Jordan River, 
+    Malahat)",
     CSD_UID == "5917056" ~ "Juan de Fuca (Part 2, Port Renfrew)",
     TRUE ~ MUN_NAME_2021
   )
@@ -96,9 +102,12 @@ cleaned_socioeconomic_index <- cleaned_socioeconomic_index |>
   )
 ```
 
-Now, lets make it so that the index data only goes up to two decminal points.
+Now, lets make it so that the index data only goes up to two decminal
+points.
 
 ```{r}
+#| warning: false
+
 index_decimal <- 2
 
 cleaned_socioeconomic_index <- cleaned_socioeconomic_index |>
@@ -119,6 +128,8 @@ cleaned_socioeconomic_index <- cleaned_socioeconomic_index |>
 cleaned_socioeconomic_index |>
   as_tibble()
 ```
+
+I also want to make the age variable an interger without decimal points.
 
 ```{r}
 age_decimal <- 0
