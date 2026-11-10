@@ -46,3 +46,7 @@ for(SEI_var in numeric_variables) {
  }
 }
 ```
+
+Now that I have conducted some basic tests, I can do some tests that 
+are contexutally relevant to this dataset.
+

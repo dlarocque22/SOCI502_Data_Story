@@ -2,6 +2,9 @@
 title: "Milestone_two"
 format: pdf
 author: Daichi Larocque
+editor: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r, results='hide'}
@@ -11,15 +14,15 @@ library(tinytable)
 ```
 
 ```{r, results='hide'}
-bc_sei_data_raw <- bcdc_get_data("b-c-socioeconomic-index")
+#bc_sei_data_raw <- bcdc_get_data("b-c-socioeconomic-index")
 ```
 
 ```{r results='hide'}
-write_csv(bc_sei_data_raw, "bc_sei_data_raw.csv")
+#write_csv(bc_sei_data_raw, "bc_sei_data_raw.csv")
 ```
 
-After writing the dataset onto my computer, I have made a copy of the dataset
-to keep the original file. 
+After writing the dataset onto my computer, I have made a copy of the
+dataset to keep the original file.
 
 ```{r results='hide'}
 socioeconomic_index_raw <- read_csv("bc_sei_data_raw.csv")
@@ -27,7 +30,7 @@ socioeconomic_index_raw <- read_csv("bc_sei_data_raw.csv")
 
 # Cleaning
 
-Let's gat a sense of the data here.
+Let's get a sense of the data here.
 
 ```{r}
 head(socioeconomic_index_raw)
@@ -58,10 +61,9 @@ cleaned_socioeconomic_index <- cleaned_socioeconomic_index |>
 )
 ```
 
-In the dataset, some municipalities are named twice because they contain sub-regions 
-or districts. It is important that we give these better identifiers so that we can
-be more precise in our analysis.
-
+In the dataset, some municipalities are named twice because they contain
+sub-regions or districts. It is important that we give these better
+identifiers so that we can be more precise in our analysis.
 
 ```{r}
 cleaned_socioeconomic_index <- cleaned_socioeconomic_index |>
@@ -96,7 +98,8 @@ cleaned_socioeconomic_index <- cleaned_socioeconomic_index |>
   )
 ```
 
-Now, lets make it so that the index data only goes up to two decminal points.
+Now, lets make it so that the index data only goes up to two decminal
+points.
 
 ```{r}
 index_decimal <- 2
@@ -139,14 +142,14 @@ cleaned_socioeconomic_index |>
 
 # Tests
 
-I have two basic tests I want to run before diving into more contextual ones.
-The first is to make sure all variables 
-are proper class. I am doing this by using the stopifnot function, which will
-stop running the code if it detects a variable that is not the 
-proper class. The second is to make sure there are no negative values 
-in the numeric variables. This code uses a logical if/else function
-to print out true or false statements depending on whether number less than 
-zero are found in each variable.
+I have two basic tests I want to run before diving into more contextual
+ones. The first is to make sure all variables are proper class. I am
+doing this by using the stopifnot function, which will stop running the
+code if it detects a variable that is not the proper class. The second
+is to make sure there are no negative values in the numeric variables.
+This code uses a logical if/else function to print out true or false
+statements depending on whether number less than zero are found in each
+variable.
 
 ```{r}
 stopifnot(
@@ -168,20 +171,20 @@ numeric_variables <- c(
   "Community", "Health", "Education", "Economics"
 )
 
-for(SEI_var in numeric_variables) {
-  if(any(cleaned_socioeconomic_index[[SEI_var]] < 0, na.rm = TRUE)) {
-    stop(
-      paste("Stop, there are negative values in the", SEI_var, "variable"))
+for(
+  SEI_var in numeric_variables) {
+    if(any(cleaned_socioeconomic_index[[SEI_var]] < 0, na.rm = TRUE)) {
+      stop(
+        paste("Stop, there are negative values in the", SEI_var, "variable"))
  } else {
-    message(
-      paste("Passed, there are no negative values in the", SEI_var, "variable") 
+      message(
+        paste("Passed, there are no negative values in the", SEI_var, "variable") 
   )
  }
 }
 ```
 
-Looks like all the tests passed and there are no negative numbers where there
-should not be.
-
+Looks like all the tests passed and there are no negative numbers where
+there should not be.
 
 
