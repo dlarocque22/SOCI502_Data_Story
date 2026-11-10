@@ -87,8 +87,7 @@ cleaned_socioeconomic_index <- cleaned_socioeconomic_index |>
     CSD_UID == "5915020" ~ "Electoral Area A (UBC)",
     CSD_UID == "5915051" ~ "City of North Vancouver",
     CSD_UID == "5915046" ~ "District of North Vancouver",
-    CSD_UID == "5917054" ~ "Juan de Fuca (Part 1, Shirley, Jordan River, 
-    Malahat)",
+    CSD_UID == "5917054" ~ "Juan de Fuca (Part 1, Shirley, Jordan River, Malahat)",
     CSD_UID == "5917056" ~ "Juan de Fuca (Part 2, Port Renfrew)",
     TRUE ~ MUN_NAME_2021
   )
@@ -242,12 +241,12 @@ the municipalities in Metro Vancouver. Then, I use a logical if_else
 function to mutate the dataset so that the rest of the municipalities 
 not included in Metro Vancouver are placed in Greater Victoria.
 
-```{r}
+```{r, fig.height = 8}
 metro_vancouver <- c(
   "Anmore", "Belcarra", "Bowen Island", "Burnaby", "City of Langley",
   "City of North Vancouver", "Coquitlam", "Delta", 
   "District of North Vancouver", "Electoral Area A (UBC)", "Lions Bay", 
-  "Maple Ridge", "New Westminister", "Pitt Meadows", "Port Coquitlam", 
+  "Maple Ridge", "New Westminster", "Pitt Meadows", "Port Coquitlam", 
   "Port Moody", "Richmond", "Surrey", "Township of Langley", "Vancouver", 
   "West Vancouver", "White Rock"
 )
@@ -256,10 +255,9 @@ metro_vancouver <- c(
 cleaned_socioeconomic_index |>
   mutate(
     Region = if_else(
-      Municipality %in% metro_vancouver, "Metro Vancouver", 
-      "Greater Victoria Region"
+      Municipality %in% metro_vancouver, "Metro Vancouver", "Greater Victoria Region"
       ),
-    Municipality = reorder(Municipality, Socioeconomic_Index)
+    Municipality = fct_reorder(Municipality, Socioeconomic_Index)
       ) |>
   
   ggplot(
@@ -268,7 +266,7 @@ cleaned_socioeconomic_index |>
       )
     ) +
       geom_col(
-        colour = "black", width = 0.5
+        colour = "black", width = 0.35
     ) +
       coord_flip() +
       scale_fill_manual(
@@ -293,12 +291,12 @@ Alternatively, here is a bar graph that separates SEI scores by metropolitan
 region. This gives us an interesting peek into well-being index scores by
 metropolitan region.
 
-```{r}
+```{r, fig.height = 8}
 metro_vancouver <- c(
   "Anmore", "Belcarra", "Bowen Island", "Burnaby", "City of Langley",
   "City of North Vancouver", "Coquitlam", "Delta", 
   "District of North Vancouver", "Electoral Area A (UBC)", "Lions Bay", 
-  "Maple Ridge", "New Westminister", "Pitt Meadows", "Port Coquitlam", 
+  "Maple Ridge", "New Westminster", "Pitt Meadows", "Port Coquitlam", 
   "Port Moody", "Richmond", "Surrey", "Township of Langley", "Vancouver", 
   "West Vancouver", "White Rock"
 )
@@ -309,7 +307,7 @@ cleaned_socioeconomic_index |>
       Municipality %in% metro_vancouver, "Metro Vancouver", 
       "Greater Victoria Region"
       ),
-    Municipality = reorder(Municipality, Socioeconomic_Index)
+    Municipality = fct_reorder(Municipality, Socioeconomic_Index)
       ) |>
   
     ggplot(
@@ -318,7 +316,7 @@ cleaned_socioeconomic_index |>
         )
       ) +
       geom_col(
-        fill = "lavender", colour = "black", width = 0.5
+        fill = "lavender", colour = "black", width = 0.35
       ) +
       coord_flip(
       ) +
