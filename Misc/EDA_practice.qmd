@@ -11,24 +11,13 @@ library(tidyverse)
 library(tinytable)
 ```
 
-```{r, results='hide'}
-#bc_sei_data_raw <- bcdc_get_data("b-c-socioeconomic-index")
-```
-
-```{r results='hide'}
-#write_csv(bc_sei_data_raw, "bc_sei_data_raw.csv")
-```
-
-After writing the dataset onto my computer, I have made a copy of the dataset
-to keep the original file. 
-
 ```{r results='hide'}
 socioeconomic_index_raw <- read_csv("bc_sei_data_raw.csv")
 ```
 
 # Cleaning
 
-Let's gat a sense of the data here.
+Let's get a sense of the data here.
 
 ```{r}
 head(socioeconomic_index_raw)

@@ -24,18 +24,6 @@ library(tidyverse)
 ```
 
 ```{r}
-#bc_sei_data_raw <- bcdc_get_data("b-c-socioeconomic-index")
-```
-
-```{r}
-#write_csv(bc_sei_data_raw, "bc_sei_data_raw.csv")
-```
-
-After writing the dataset onto my computer and into the milestone two directory,
-I also saved a copy of the raw data into the 'data' directory in the Githib
-repository for safe keeping.
-
-```{r}
 #| message: false
 
 socioeconomic_index_raw <- read_csv("bc_sei_data_raw.csv")
@@ -94,7 +82,7 @@ cleaned_socioeconomic_index <- cleaned_socioeconomic_index |>
 )
 ```
 
-Let's also rename the columns
+Let's also rename the columns so that they look cleaner.
 
 ```{r}
 cleaned_socioeconomic_index <- cleaned_socioeconomic_index |>
@@ -111,8 +99,10 @@ cleaned_socioeconomic_index <- cleaned_socioeconomic_index |>
   )
 ```
 
-Now, lets make it so that the index data only goes up to two decminal
-points.
+Now, lets make it so that the index data only goes up to two decimal
+points. My reasoning for this is that after two decimal points, the differences 
+in scores becomes trivial for a social measure such as well-being. 
+Two decimals is adequate.
 
 ```{r}
 #| warning: false
@@ -128,7 +118,8 @@ cleaned_socioeconomic_index <- cleaned_socioeconomic_index |>
         Economics,
         Education,
         Health, 
-        Community
+        Community,
+        Average_Age
     ), 
     round, digits = index_decimal
   )
@@ -138,35 +129,15 @@ cleaned_socioeconomic_index |>
   as_tibble()
 ```
 
-I also want to make the age variable an interger without decimal points.
-
-```{r}
-age_decimal <- 0
-
-cleaned_socioeconomic_index <- cleaned_socioeconomic_index |>
-  mutate(
-    across(
-      c(
-        Average_Age
-      ),
-      round, digits = age_decimal
-  )
-)
-
-cleaned_socioeconomic_index |>
-  as_tibble()
-```
-
 # Tests
 
-I have two basic tests I want to run. 
-The first is to make sure all variables are proper class. I am
-doing this by using the stopifnot function, which will stop running the
-code if it detects a variable that is not the proper class. The second
-is to make sure there are no negative values in the numeric variables.
-This code uses a logical if/else function to print out either 'passed' or 'stop'
-statements depending on whether number less than zero are found in each
-variable.
+I have two basic tests I want to run.The first is to make sure all variables 
+are proper class. I am doing this by using the stopifnot function, which will 
+stop running the code if it detects a variable that is not the proper class. 
+The second is to make sure there are no negative values in the numeric 
+variables.This code uses a logical if/else function to print out either '
+passed' or 'stop' statements depending on whether number less than zero are 
+found in each variable.
 
 ```{r}
 stopifnot(
@@ -178,7 +149,7 @@ stopifnot(
     is.numeric(cleaned_socioeconomic_index$Average_Age),
   "Total index must be numeric" = 
     is.numeric(cleaned_socioeconomic_index$Total_Index),
-  "SEI Index muste be numeric" = 
+  "SEI must be numeric" = 
     is.numeric(cleaned_socioeconomic_index$Socioeconomic_Index),
   "Community must be numeric" = 
     is.numeric(cleaned_socioeconomic_index$Community),
@@ -211,9 +182,6 @@ for(
 }
 ```
 
-Looks like all the tests passed and there are no negative numbers where
-there should not be.
-
 # Exploratory Data Analysis
 
 Before making any graphs, I am gonna get a glimpe of the data and run some
@@ -241,7 +209,7 @@ the municipalities in Metro Vancouver. Then, I use a logical if_else
 function to mutate the dataset so that the rest of the municipalities 
 not included in Metro Vancouver are placed in Greater Victoria.
 
-```{r, fig.height = 8}
+```{r, fig.width = 7, fig.height = 9, out.height = "85%", fig.align = "center"}
 metro_vancouver <- c(
   "Anmore", "Belcarra", "Bowen Island", "Burnaby", "City of Langley",
   "City of North Vancouver", "Coquitlam", "Delta", 
@@ -283,7 +251,12 @@ cleaned_socioeconomic_index |>
         base_size = 8
     ) +
       theme(
-        legend.position = "bottom"
+        legend.position = "bottom", 
+        legend.title.position = "top",
+        legend.title = element_text(hjust = 0.5),
+        plot.title = element_text(
+          hjust = 0.5, face = "bold"
+        )
       )
 ```
 
@@ -291,7 +264,7 @@ Alternatively, here is a bar graph that separates SEI scores by metropolitan
 region. This gives us an interesting peek into well-being index scores by
 metropolitan region.
 
-```{r, fig.height = 8}
+```{r, fig.width = 7, fig.height = 9, out.height = "85%", fig.align = "center"}
 metro_vancouver <- c(
   "Anmore", "Belcarra", "Bowen Island", "Burnaby", "City of Langley",
   "City of North Vancouver", "Coquitlam", "Delta", 
@@ -324,23 +297,28 @@ cleaned_socioeconomic_index |>
         Region ~ ., scales = "free_y", space = "free"
       ) +
       labs(
-        title = "Comparing SEI Index By Metropolitan Region",
+        title = "Comparing SEI By Metropolitan Region",
         x = "Metropolitan Region",
-        y = "SEI Index"
+        y = "Socioeconomic Index"
       ) +
       theme_minimal(
         base_size = 8
+      ) +
+      theme(
+        plot.title = element_text(
+          hjust = 0.5, face = "bold"
+        )
       )
 ```
 
-Based on this graph, we can see that SEI index scores are relatively higher 
+Based on this graph, we can see that SEI scores are relatively higher 
 in the Metro Vancouver region than the Greater Victoria Region. 
 
 ## Box Plot
 
 Lastly, we can create a box plot to see the distribution of scores across key
 numeric variables in my dataset. We will look at education, heath, community,
-economics, and SEI index. 
+economics, and SEI. 
 
 First, I am going to use the pivot_longer function to reshape my data, the 
 names_to argument makes a new column at the end of the dataset, inputting each 
@@ -377,15 +355,32 @@ ggplot(
   ) +
   theme_minimal(
     base_size = 6
+  ) +
+  theme(
+    legend.position = "none",
+    plot.title = element_text(
+      hjust = 0.5, face ="bold"
+    )
   )
 ```
 
 Based on this graph, we can see that economics has the highest median index score,
-while health has the lowest. The median SEI index is floating around a score of 55
+while health has the lowest. The median SEI is floating around a score of 55
 out of 100. It also seems that education has the largest variability within
 the 25th and 75th percentile and community has the lowest variability within
 the 25th and 75th percentile. The black dots above and below each box represent
 outliers that I should revisit and check.
+
+# Surprises
+
+Based on these graphs, the biggest surprise to me was the relatively higher SEI
+scores among people who live in the Vancouver Metropolitan area compared to 
+people who live in the Greater Victoria Region. Given that I am from Saanich,
+some of the SEI scores were surprising, such as Victoria or Sidney
+having a relatively low SEI. The SEI scores associated with the Metro 
+Vancouver region were less surprising, with places such as Lions Bay or 
+West Vancouver reporting some of the highest SEI values. These municipalities
+are typically associated with higher economic standing and affluence.
 
 # References
 
