@@ -1,0 +1,88 @@
+---
+title: "Spatial_Mapping_Script"
+format: html
+author: Daichi Larocque
+---
+
+This code is not part of any submissions for SOCI 502, just me playing around 
+with spatial mapping. It's hard (sigh). This code was created with the help of 
+Google Gemini AI.
+
+```{r}
+#| message: false
+
+library(bcdata)
+library(bcmaps)
+library(tidyverse)
+library(sf)
+library(ggrepel)
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| fig.width: 11
+#| fig.height: 9
+#| fig.align: "center"
+
+metro_vancouver <- c(
+  "Anmore", "Belcarra", "Bowen Island", "Burnaby", "City of Langley",
+  "City of North Vancouver", "Coquitlam", "Delta", 
+  "District of North Vancouver", "Electoral Area A (UBC)", "Lions Bay", 
+  "Maple Ridge", "New Westminster", "Pitt Meadows", "Port Coquitlam", 
+  "Port Moody", "Richmond", "Surrey", "Township of Langley", "Vancouver", 
+  "West Vancouver", "White Rock"
+)
+
+bc_csd <- census_subdivision()
+
+SEI_spatial_data <- bc_csd |>
+  inner_join(
+    cleaned_socioeconomic_index |> 
+      mutate(
+        CSD_UID = as.character(CSD_UID),
+        Region = if_else(Municipality %in% metro_vancouver, "Metro Vancouver", "Greater Victoria Region")
+      ),
+    by = c("CENSUS_SUBDIVISION_ID" = "CSD_UID")
+  ) |>
+  filter(Region %in% c("Metro Vancouver", "Greater Victoria Region"))
+
+SEI_centroids <- SEI_spatial_data |>
+  st_centroid(of_largest_polygon = TRUE) |>
+  cbind(st_coordinates(st_centroid(SEI_spatial_data, of_largest_polygon = TRUE)))
+
+ggplot(SEI_spatial_data) +
+  geom_sf(aes(fill = Socioeconomic_Index), colour = "white", linewidth = 0.2) +
+  geom_text_repel(
+    data = SEI_centroids,
+    aes(x = X, y = Y, label = Municipality),
+    size = 3,
+    fontface = "bold",
+    box.padding = 0.5,       
+    point.padding = 0.3,     
+    force = 2,               
+    min.segment.length = 0,  
+    segment.color = "black",
+    segment.size = 0.5,      
+    max.overlaps = Inf       
+  ) +
+  scale_fill_viridis_c(
+    option = "viridis", 
+    direction = -1,
+    name = "SEI Score"
+  ) +
+  labs(
+    title = "Socioeconomic Index Scores Across Metro Vancouver & Greater Victoria",
+    subtitle = "2023 Municipal Well-being Measures with Leader Lines",
+    caption = "Source: BC Stats & bcmaps package"
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5),
+    legend.position = "right",
+    panel.grid = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank()
+  )
+```
