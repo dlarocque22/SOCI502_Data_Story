@@ -218,7 +218,7 @@ cleaned_socioeconomic_index |>
     )
   ) +
   geom_point(
-    colour = "forestgreen"
+    alpha = 0.5, colour = "forestgreen"
   ) +
   geom_smooth(
     method = "lm", formula = y ~ x, se = FALSE, colour = "black"
@@ -249,7 +249,7 @@ cleaned_socioeconomic_index |>
     )
   ) +
   geom_point(
-    colour = "coral"
+    alpha = 0.5, colour = "coral"
   ) +
   geom_smooth(
     method = "lm", formula = y ~ x, se = FALSE, colour = "black"
@@ -307,8 +307,10 @@ cleaned_socioeconomic_index |>
     ) +
       coord_flip() +
       scale_fill_manual(
-        values = c("Metro Vancouver" = "skyblue", "Greater Victoria Region" =
-        "forestgreen")
+        values = c(
+          "Metro Vancouver" = "skyblue", "Greater Victoria Region" =
+            "forestgreen"
+      )
     ) +
       labs(
         title = "SEI Score by Municipality: Metro Vancouver & Greater Victoria",
@@ -395,32 +397,38 @@ dimension (Education, Heath, etc...) in a separate row within this new column
 for each municipality. The values_to argument prints the scores to each 
 respective dimension into a new column. The reason I am reshaping the data is 
 because it makes it easier for ggplot to differentiate each dimension. It 
-creates five separate rows for each municipality, instead of each municiaplity 
-only having one row containing all five dimensions.
+creates five separate rows for each municipality, instead of each municipality 
+only having one row containing all five dimensions. I have also used the
+geom_jitter argument to show each data point within each index, giving more
+context to how the data is distributed.
 
 
 ```{r}
 cleaned_socioeconomic_index |> 
   pivot_longer(
     c(
-      Education, Health, Community, Economics, Socioeconomic_Index
+      Education, Health, Community, Economics, Socioeconomic_Index,
+      Total_Index
       ),
     names_to = "Wellbeing_Dimension",
-    values_to = "Score"
+    values_to = "Scores"
     ) |>
 
 ggplot(
   aes(
-    x = Wellbeing_Dimension, y = Score, fill = Wellbeing_Dimension
+    x = Wellbeing_Dimension, y = Scores, fill = Wellbeing_Dimension
     )
   ) +
   geom_boxplot(
     alpha = 0.7, width = 0.5, outlier.color = "black"
   ) +
+  geom_jitter(
+    alpha = 0.3, width = 0.15, height = 0
+  ) +
   labs(
-    title = "Distribution of Health, Education, Community, Economics, and SEI Scores",
+    title = "Distribution of Health, Education, Community, Economics, SEI, and Total Index Scores",
     x = "Index Dimension",
-    y = "Score"
+    y = "Scores"
   ) +
   theme_minimal(
     base_size = 6
