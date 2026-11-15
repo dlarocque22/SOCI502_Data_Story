@@ -184,7 +184,7 @@ for(
 
 # Exploratory Data Analysis
 
-Before making any graphs, I am gonna get a glimpe of the data and run some
+Before making any graphs, I am gonna get a glimpse of the data and run some
 basic descriptive statistics to get a sense of central tendency and 
 variability in the data.
 
@@ -200,6 +200,73 @@ tail(cleaned_socioeconomic_index)
 summary(cleaned_socioeconomic_index)
 ```
 
+## Plotting SEI, Age, and Health
+
+Running this code will print a simple plot that puts SEI on the x axis and 
+average age on the y axis for municipalities within the Metro Vancouver and
+Greater Victoria Areas. It is important that I plot the data to get a sense
+of the data outside of just viewing summary statistics. I have also created
+a regression line using the geom_smooth argument, which creates a line of
+bets fit for y (average age) as a function of x (SEI). As we can see, there 
+is a negligible relationship between age and SEI.
+
+```{r}
+cleaned_socioeconomic_index |>
+  ggplot(
+    aes(
+      x = Socioeconomic_Index, y = Average_Age
+    )
+  ) +
+  geom_point(
+    colour = "forestgreen"
+  ) +
+  geom_smooth(
+    method = "lm", formula = y ~ x, se = FALSE, colour = "black"
+  ) +
+  labs(
+    title = "Average Age and SEI Scores",
+    x = "Socioeconomic Index",
+    y = "Average Age"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(
+      hjust = 0.5, face = "bold"
+    )
+  )
+```
+
+If I look at the relationship between SEI (economic, education, community) and 
+the health index, I can see a slight positive relationship. With more 
+statistical testing, I could potentially make claims about the 
+relationship between social well-being and health outcomes in BC.
+
+```{r}
+cleaned_socioeconomic_index |>
+  ggplot(
+    aes(
+      x = Socioeconomic_Index, y = Health
+    )
+  ) +
+  geom_point(
+    colour = "coral"
+  ) +
+  geom_smooth(
+    method = "lm", formula = y ~ x, se = FALSE, colour = "black"
+  ) +
+  labs(
+    title = "Health Index and SEI Scores",
+    x = "Socioeconomic Index",
+    y = "Health Index"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(
+      hjust = 0.5, face = "bold"
+    )
+  )
+```
+
 ## Bar Graphs
 
 First, I want to create a bar graph that shows SEI score by each municipality. I
@@ -207,7 +274,9 @@ also reordered the municipalities so that they are ordered from highest SEI scor
 to lowest SEI score. I create a new variable that encapsulates all
 the municipalities in Metro Vancouver. Then, I use a logical if_else
 function to mutate the dataset so that the rest of the municipalities 
-not included in Metro Vancouver are placed in Greater Victoria.
+not included in Metro Vancouver are placed in Greater Victoria. It makes
+sense to use bar charts for my data because "municipality" is a
+categorical (nominal) variable.
 
 ```{r, fig.width = 7, fig.height = 9, out.height = "85%", fig.align = "center"}
 metro_vancouver <- c(
