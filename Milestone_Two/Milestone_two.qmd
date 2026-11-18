@@ -47,7 +47,9 @@ cleaned_socioeconomic_index <- socioeconomic_index_raw |>
 
 Now, I will only include the municipalities of interest. For the purposes of
 this data story, I am only considering municipalities within the Metro
-Vancouver Region and the Greater Victoria Region.
+Vancouver Region and the Greater Victoria Region. As such, I gather the
+official municipalities within these regions and place them into the
+cleaned dataset.
 
 ```{r}
 cleaned_socioeconomic_index <- cleaned_socioeconomic_index |>
