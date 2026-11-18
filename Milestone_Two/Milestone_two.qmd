@@ -12,7 +12,7 @@ editor:
 
 This script uses the tidyverse and tinytable to clean, test, and run exploratory 
 data analysis with socioeconomic index data provided by BC Stats 
-[@Tinytable; @bcstats2026sei; @bcdata; @Tidyverse].
+[@bcstats2026sei; @bcdata; @Tidyverse].
 
 # Workflow Set-Up
 
@@ -21,8 +21,6 @@ data analysis with socioeconomic index data provided by BC Stats
 
 library(bcdata)
 library(tidyverse)
-library(sf)
-library(tinytable)
 library(modelsummary)
 ```
 
@@ -204,9 +202,12 @@ tail(cleaned_socioeconomic_index)
 summary(cleaned_socioeconomic_index)
 ```
 
+The code below provides a table of summary statistics for continuous variables
+in the cleaned dataset.
+
 ```{r}
 cleaned_socioeconomic_index |>
-  select(-CSD_UID, -Municipality,) |>
+  select(-CSD_UID, -Municipality) |>
   datasummary_skim(histogram = FALSE)
 ```
 
@@ -217,8 +218,7 @@ average age on the y axis for municipalities within the Metro Vancouver and
 Greater Victoria Areas. It is important that I plot the data to get a sense
 of the data outside of just viewing summary statistics. I have also created
 a regression line using the geom_smooth argument, which creates a line of
-best fit for y (average age) as a function of x (SEI). As we can see, there 
-is a negligible relationship between age and SEI.
+best fit for y (average age) as a function of x (SEI).
 
 ```{r}
 cleaned_socioeconomic_index |>

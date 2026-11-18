@@ -9,11 +9,7 @@ author: Daichi Larocque
 ```{r}
 #| message: false
 
-library(bcdata)
 library(tidyverse)
-library(sf)
-library(tinytable)
-library(modelsummary)
 ```
 
 ```{r}

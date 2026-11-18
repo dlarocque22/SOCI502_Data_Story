@@ -7,7 +7,6 @@ author: Daichi Larocque
 ```{r}
 #| message: false
 
-library(bcdata)
 library(bcmaps)
 library(tidyverse)
 library(sf)

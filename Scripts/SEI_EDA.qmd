@@ -9,10 +9,7 @@ author: Daichi Larocque
 ```{r}
 #| message: false
 
-library(bcdata)
 library(tidyverse)
-library(sf)
-library(tinytable)
 library(modelsummary)
 ```
 
@@ -36,6 +33,15 @@ tail(cleaned_socioeconomic_index)
 
 ```{r}
 summary(cleaned_socioeconomic_index)
+```
+
+The code below provides a table of summary statistics for continuous variables
+in the cleaned dataset.
+
+```{r}
+cleaned_socioeconomic_index |>
+  select(-CSD_UID, -Municipality) |>
+  datasummary_skim(histogram = FALSE)
 ```
 
 ## Bar Graphs
