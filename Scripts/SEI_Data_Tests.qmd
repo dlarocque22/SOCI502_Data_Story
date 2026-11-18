@@ -4,6 +4,22 @@ format: pdf
 author: Daichi Larocque
 ---
 
+# Workflow Set-Up
+
+```{r}
+#| message: false
+
+library(bcdata)
+library(tidyverse)
+library(sf)
+library(tinytable)
+library(modelsummary)
+```
+
+```{r}
+cleaned_socioeconomic_index <- read_csv("cleaned_socioeconomic_index.csv")
+```
+
 # Tests
 
 I have two basic tests I want to run. 

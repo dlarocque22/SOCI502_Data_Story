@@ -4,10 +4,6 @@ format: html
 author: Daichi Larocque
 ---
 
-This code is not part of any submissions for SOCI 502, just me playing around 
-with spatial mapping. It's hard (sigh). This code was created with the help of 
-Google Gemini AI.
-
 ```{r}
 #| message: false
 
@@ -16,6 +12,10 @@ library(bcmaps)
 library(tidyverse)
 library(sf)
 library(ggrepel)
+```
+
+```{r}
+cleaned_socioeconomic_index <- read_csv("cleaned_socioeconomic_index.csv")
 ```
 
 ```{r}

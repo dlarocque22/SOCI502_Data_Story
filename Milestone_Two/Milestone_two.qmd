@@ -1,5 +1,5 @@
 ---
-title: "Milestone Two: Cleaning, Testing, and Exploring Socioeconomic Well-Being in BC"
+title: "Milestone Two: Cleaning, Testing, and Exploring Socioeconomic Well-Being in Metro Vancouver and Greater Victoria"
 format: pdf
 author: Daichi Larocque
 bibliography: bibliography.bib
@@ -10,9 +10,9 @@ editor:
 
 # Introduction
 
-This script uses the tidyverse to clean, test, and run exploratory data analysis 
-with socioeconomic index data provided by BC Stats [@bcstats2026sei; @bcdata; 
-@Tidyverse].
+This script uses the tidyverse and tinytable to clean, test, and run exploratory 
+data analysis with socioeconomic index data provided by BC Stats 
+[@Tinytable; @bcstats2026sei; @bcdata; @Tidyverse].
 
 # Workflow Set-Up
 
@@ -22,6 +22,8 @@ with socioeconomic index data provided by BC Stats [@bcstats2026sei; @bcdata;
 library(bcdata)
 library(tidyverse)
 library(sf)
+library(tinytable)
+library(modelsummary)
 ```
 
 ```{r}
@@ -102,8 +104,7 @@ cleaned_socioeconomic_index <- cleaned_socioeconomic_index |>
 
 Now, let's make it so that the index data only goes up to two decimal
 points. My reasoning for this is that after two decimal points, the differences 
-in scores become trivial for a social measure such as well-being. 
-Two decimals is adequate.
+in scores become trivial for a social measure such as well-being.
 
 ```{r}
 #| warning: false
@@ -132,12 +133,12 @@ cleaned_socioeconomic_index |>
 
 # Tests
 
-I have two basic tests I want to run.The first is to make sure all variables 
+I have two basic tests I want to run. The first is to make sure all variables 
 are proper class. I am doing this by using the stopifnot function, which will 
 stop running the code if it detects a variable that is not the proper class. 
 The second is to make sure there are no negative values in the numeric 
-variables.This code uses a logical if/else function to print out either '
-passed' or 'stop' statements depending on whether number less than zero are 
+variables. This code uses a logical if/else function to print out either 
+'passed' or 'stop' statements depending on whether number less than zero are 
 found in each variable.
 
 ```{r}
@@ -201,6 +202,12 @@ tail(cleaned_socioeconomic_index)
 summary(cleaned_socioeconomic_index)
 ```
 
+```{r}
+cleaned_socioeconomic_index |>
+  select(-CSD_UID, -Municipality,) |>
+  datasummary_skim(histogram = FALSE)
+```
+
 ## Plotting SEI, Age, and Health
 
 Running this code will print a simple plot that puts SEI on the x axis and 
@@ -237,12 +244,14 @@ cleaned_socioeconomic_index |>
   )
 ```
 
-If I look at the relationship between SEI (economic, education, community) and 
-the health index, I can see a slight positive relationship. Examining this
-relationship is important as the SEI index does not include the health 
-dimension. As such, with more statistical testing, I could potentially make 
-claims about the relationship between social well-being and health outcomes in 
-BC.
+Below, I have crafted a more complex figure, which leveraged SEI, health 
+index, and population. Examining the relationship between SEI (economic, 
+education, community) and health index, I can see a slight positive relationship. 
+Understanding this relationship is important as the SEI index does not include the 
+health dimension. As such, with more statistical testing, I could potentially 
+make claims about the relationship between social well-being and health outcomes in 
+BC. The population variable adds a layer of complexity and gives a glimpse
+into how population is correlated with both the health index and SEI index.
 
 ```{r}
 cleaned_socioeconomic_index |>
@@ -252,20 +261,30 @@ cleaned_socioeconomic_index |>
     )
   ) +
   geom_point(
+    aes(
+      size = Population_2023),
     alpha = 0.5, colour = "coral"
   ) +
   geom_smooth(
     method = "lm", formula = y ~ x, se = FALSE, colour = "black"
   ) +
+  scale_size_area(max_size = 10, labels = scales::label_comma(
+   )
+  ) +
   labs(
-    title = "Health Index and SEI Scores",
+    title = "Health Index vs. Socieconomic Index Scores",
+    subtitle = "With Municipal Population Statistics",
     x = "Socioeconomic Index",
-    y = "Health Index"
+    y = "Health Index",
+    size = "Population (2023)"
   ) +
   theme_minimal() +
   theme(
     plot.title = element_text(
       hjust = 0.5, face = "bold"
+    ),
+    plot.subtitle = element_text(
+      hjust = 0.5
     )
   )
 ```
@@ -339,15 +358,6 @@ region. This gives us an interesting peek into well-being index scores by
 metropolitan region.
 
 ```{r, fig.width = 7, fig.height = 9, out.height = "85%", fig.align = "center"}
-metro_vancouver <- c(
-  "Anmore", "Belcarra", "Bowen Island", "Burnaby", "City of Langley",
-  "City of North Vancouver", "Coquitlam", "Delta", 
-  "District of North Vancouver", "Electoral Area A (UBC)", "Lions Bay", 
-  "Maple Ridge", "New Westminster", "Pitt Meadows", "Port Coquitlam", 
-  "Port Moody", "Richmond", "Surrey", "Township of Langley", "Vancouver", 
-  "West Vancouver", "White Rock"
-)
-
 cleaned_socioeconomic_index |>
   mutate(
     Region = if_else(
@@ -422,13 +432,13 @@ ggplot(
     )
   ) +
   geom_boxplot(
-    alpha = 0.7, width = 0.5, outlier.color = "black"
+    alpha = 0.5, width = 0.5, outlier.color = "black"
   ) +
   geom_jitter(
-    alpha = 0.3, width = 0.15, height = 0
+    alpha = 0.5, width = 0.15, height = 0
   ) +
   labs(
-    title = "Distribution of Health, Education, Community, Economics, SEI, and Total Index Scores",
+    title = "Distribution of Community, Economics, Education, Health, Socioeconomic Index, and Total Index Scores",
     x = "Index Dimension",
     y = "Scores"
   ) +

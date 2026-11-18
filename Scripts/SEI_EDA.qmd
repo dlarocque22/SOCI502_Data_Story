@@ -4,6 +4,22 @@ format: html
 author: Daichi Larocque
 ---
 
+# Workflow Set-Up
+
+```{r}
+#| message: false
+
+library(bcdata)
+library(tidyverse)
+library(sf)
+library(tinytable)
+library(modelsummary)
+```
+
+```{r}
+cleaned_socioeconomic_index <- read_csv("cleaned_socioeconomic_index.csv")
+```
+
 # Exploratory Data Analysis
 
 Before making any graphs, I am gonna get a glimpe of the data and run some
