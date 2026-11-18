@@ -10,9 +10,21 @@ editor:
 
 # Introduction
 
-This script uses the tidyverse and tinytable to clean, test, and run exploratory 
+This script uses the tidyverse to clean, test, and run exploratory 
 data analysis with socioeconomic index data provided by BC Stats 
-[@bcstats2026sei; @bcdata; @Tidyverse].
+[@bcstats2026sei; @bcdata; @Tidyverse]. As a reminder, there are four 
+dimensions of well-being measured by BC Stats: Health, community, economics,
+and education. The socioeconomic index (SEI) is a social well-being
+indicator that encapsulates the community, economics, and education 
+dimensions. The total index encapsulates all four dimensions. According to 
+@bcstats2026sei, this delineation is to ensure that physical health 
+dimensions are not aggregated into social well-being. This would allow 
+an examination of social well-being as a determinant of physical health 
+outcomes as defined by the BC Government. 
+
+**Updated RQ:** How does socioeconomic index change across various 
+municipalities in the Metro Vancouver and Greater Victoria regions in British 
+Columbia?
 
 # Workflow Set-Up
 
@@ -198,14 +210,12 @@ head(cleaned_socioeconomic_index)
 tail(cleaned_socioeconomic_index)
 ```
 
-```{r}
-summary(cleaned_socioeconomic_index)
-```
-
 The code below provides a table of summary statistics for continuous variables
 in the cleaned dataset.
 
 ```{r}
+#| warning: false
+
 cleaned_socioeconomic_index |>
   select(-CSD_UID, -Municipality) |>
   datasummary_skim(histogram = FALSE)
@@ -213,9 +223,9 @@ cleaned_socioeconomic_index |>
 
 ## Plotting SEI, Age, and Health
 
-Running this code will print a simple plot that puts SEI on the x axis and 
-average age on the y axis for municipalities within the Metro Vancouver and
-Greater Victoria Areas. It is important that I plot the data to get a sense
+Running this code will print a simple plot that puts SEI on the x-axis and 
+average age on the y-axis for municipalities within the Metro Vancouver and
+Greater Victoria areas. It is important that I plot the data to get a sense
 of the data outside of just viewing summary statistics. I have also created
 a regression line using the geom_smooth argument, which creates a line of
 best fit for y (average age) as a function of x (SEI).
@@ -398,17 +408,17 @@ cleaned_socioeconomic_index |>
 ```
 
 Based on this graph, we can see that SEI scores are relatively higher 
-in the Metro Vancouver region than the Greater Victoria Region. 
+in the Metro Vancouver region than the Greater Victoria Region.
 
 ## Box Plot
 
 Lastly, we can create a box plot to see the distribution of scores across key
 numeric variables in my dataset. We will look at education, health, community,
-economics, and SEI. 
+economics, SEI, and total index. 
 
 First, I am going to use the pivot_longer function to reshape my data, the 
 names_to argument makes a new column at the end of the dataset, inputting each 
-dimension (Education, Heath, etc...) in a separate row within this new column 
+dimension (education, community, etc...) in a separate row within this new column 
 for each municipality. The values_to argument prints the scores to each 
 respective dimension into a new column. The reason I am reshaping the data is 
 because it makes it easier for ggplot to differentiate each dimension. It 
@@ -455,7 +465,7 @@ ggplot(
   )
 ```
 
-Based on this graph, we can see that economics has the highest median index score,
+Based on this graph, we can see that economics has the highest median score,
 while health has the lowest. The median SEI is approximately 55
 out of 100. It also seems that education has the largest variability within
 the 25th and 75th percentile and community has the lowest variability within
@@ -468,7 +478,9 @@ Based on these graphs, the biggest surprise to me was the relatively higher SEI
 scores among people who live in the Vancouver Metropolitan area compared to 
 people who live in the Greater Victoria Region. Given that I am from Saanich,
 some of the SEI scores were surprising, such as Victoria or Sidney
-having a relatively low SEI. The SEI scores associated with the Metro 
+having a relatively low SEI. Places such as Victoria or Sidney are 
+what I would view as places where people have a high levels of education and 
+economic capital. The SEI scores associated with the Metro 
 Vancouver region were less surprising, with places such as Lions Bay or 
 West Vancouver reporting some of the highest SEI values. These municipalities
 are typically associated with higher economic standing and affluence.
